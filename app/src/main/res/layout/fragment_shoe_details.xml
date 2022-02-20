@@ -4,7 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ShoeDetailsFragment">
 
+    <data>
+
+        <variable
+            name="mainViewModel"
+            type="com.udacity.shoestore.MainViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/fragment_horizontal_margin">
@@ -13,6 +21,7 @@
             android:id="@+id/shoeNameInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:tag="@{mainViewModel.NAME_INPUT_TAG}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -22,13 +31,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/shoe_name"
-                android:lines="1" />
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName"
+                android:lines="1"
+                android:maxLines="1"
+                android:text="@={mainViewModel.shoeModel.name}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/companyInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:tag="@{mainViewModel.COMPANY_INPUT_TAG}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shoeNameInputLayout">
@@ -38,13 +52,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/company"
-                android:lines="1" />
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName"
+                android:lines="1"
+                android:maxLines="1"
+                android:text="@={mainViewModel.shoeModel.company}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/shoeSizeInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:tag="@{mainViewModel.SIZE_INPUT_TAG}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/companyInputLayout">
@@ -54,13 +73,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/shoe_size"
-                android:inputType="numberDecimal" />
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:text="@={`` + mainViewModel.shoeModel.size}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/descriptionInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:tag="@{mainViewModel.DESCRIPTION_INPUT_TAG}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shoeSizeInputLayout">
@@ -71,7 +95,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/description"
                 android:imeOptions="actionDone"
-                android:lines="5" />
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:text="@={mainViewModel.shoeModel.description}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -80,6 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/rounded_corner"
+            android:enabled="@{mainViewModel.isModelValid()}"
+            android:onClick="@{()->mainViewModel.save()}"
             android:text="@string/save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

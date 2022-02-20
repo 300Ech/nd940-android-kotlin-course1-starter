@@ -1,22 +1,47 @@
 package com.udacity.shoestore
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
 import com.udacity.shoestore.models.Shoe
+import com.udacity.shoestore.models.ValidationError
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    private val shoeList: MutableLiveData<MutableList<Shoe>> by lazy {
-        MutableLiveData<MutableList<Shoe>>().also {
-            loadShoes()
-        }
+
+    // The actual shoe list to display
+    private val shoeList = MutableLiveData<MutableList<Shoe>>()
+    var shoeModel = MutableLiveData<Shoe>()
+
+    // Contains the input validation errors
+    private val _errorList = MutableLiveData<MutableList<ValidationError>>()
+    val errorList: LiveData<MutableList<ValidationError>>
+        get() = _errorList
+
+    // If there is not validations errors, this value will be true, enabling the
+    // "Save" button.
+    private val _isModelValid = MutableLiveData<Boolean>()
+    val isModelValid: LiveData<Boolean>
+        get() = _isModelValid
+
+    // This will inform the fragment that the saving is complete, to navigate
+    // back to the Shoe list.
+    private val _shoeSaved = MutableLiveData<Boolean>()
+    val shoeSaved: LiveData<Boolean>
+        get() = _shoeSaved
+
+    init {
+        shoeModel.value = getDefaultShoeItem()
+        shoeList.value = mutableListOf()
+        loadShoes()
     }
 
     private fun loadShoes() {
-        var defaultShoes: MutableList<Shoe> = arrayListOf()
+        val defaultShoes: MutableList<Shoe> = arrayListOf()
 
         defaultShoes.add(
             Shoe(
+                id = 1,
                 name = "Miller Cloud Sandal",
                 size = 8.5,
                 company = "Tory Burch",
@@ -31,6 +56,7 @@ class MainViewModel : ViewModel() {
 
         defaultShoes.add(
             Shoe(
+                id = 2,
                 name = "Daybreak Sneaker",
                 size = 8.0,
                 company = "Nike",
@@ -45,6 +71,7 @@ class MainViewModel : ViewModel() {
 
         defaultShoes.add(
             Shoe(
+                id = 3,
                 name = "Emerson Chelsea Boot",
                 size = 8.5,
                 company = "Treasure & Bond",
@@ -59,6 +86,7 @@ class MainViewModel : ViewModel() {
 
         defaultShoes.add(
             Shoe(
+                id = 4,
                 name = "Jessenia Ankle Strap Sandal",
                 size = 7.0,
                 company = "Steve Madden",
@@ -73,6 +101,7 @@ class MainViewModel : ViewModel() {
 
         defaultShoes.add(
             Shoe(
+                id = 5,
                 name = "Hazel Pointed Toe Pump",
                 size = 8.5,
                 company = "Sam Edelman",
@@ -84,13 +113,76 @@ class MainViewModel : ViewModel() {
                 )
             )
         )
+
+        shoeList.value?.addAll(defaultShoes)
     }
 
-    fun addNew(shoe: Shoe) {
-        shoeList.value?.add(shoe)
+    fun edit(id: Int) {
+        if (id == 0) shoeModel.value = getDefaultShoeItem()
     }
 
-    fun remove(shoe: Shoe) {
-        shoeList.value?.remove(shoe)
+    fun validateInput() {
+        val validationErrors = mutableListOf<ValidationError>()
+
+        if (shoeModel.value?.name.isNullOrBlank()) validationErrors.add(
+            ValidationError(
+                NAME_INPUT_TAG,
+                "You must provide a name."
+            )
+        )
+        if (shoeModel.value?.description.isNullOrBlank()) validationErrors.add(
+            ValidationError(
+                DESCRIPTION_INPUT_TAG,
+                "You must provide a description"
+            )
+        )
+        if (shoeModel.value?.company.isNullOrBlank()) validationErrors.add(
+            ValidationError(
+                COMPANY_INPUT_TAG,
+                "You must specify a company."
+            )
+        )
+        if (shoeModel.value?.size!! <= 0.0) validationErrors.add(
+            ValidationError(
+                SIZE_INPUT_TAG,
+                "You must provide a size."
+            )
+        )
+
+        _errorList.postValue(validationErrors)
+
+        _isModelValid.postValue(validationErrors.size == 0)
+    }
+
+    // Saves the changes into memory.
+    fun save() {
+        if (_isModelValid.value == false) return
+
+        if (shoeModel.value != null) {
+            if (shoeModel.value?.id == 0) add()
+        }
+    }
+
+    // Returns the default values of the model.
+    private fun getDefaultShoeItem() =
+        Shoe(id = 0, name = "", size = 0.0, company = "", description = "")
+
+    // Adds a new item to the Shoe list.
+    private fun add() {
+        val newIndex = (shoeList.value?.maxOf { it.id } ?: 0) + 1
+
+        shoeModel.value?.id = newIndex
+        val value = shoeList.value ?: arrayListOf()
+        value.add(shoeModel.value!!)
+        shoeList.postValue(value)
+
+        _shoeSaved.value = true
+    }
+
+    companion object {
+        const val NAME_INPUT_TAG = "NAME_INPUT_TAG"
+        const val COMPANY_INPUT_TAG = "COMPANY_INPUT_TAG"
+        const val SIZE_INPUT_TAG = "SIZE_INPUT_TAG"
+        const val DESCRIPTION_INPUT_TAG = "DESCRIPTION_INPUT_TAG"
     }
 }
