@@ -30,8 +30,12 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.loginFragment) activateFullScreen()
-            else disableFullScreen()
+            when (destination.id) {
+                R.id.loginFragment, R.id.welcomeScreenFragment -> {
+                    activateFullScreen()
+                }
+                else -> disableFullScreen()
+            }
         })
 
         Timber.plant(Timber.DebugTree())
