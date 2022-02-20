@@ -1,14 +1,17 @@
 package com.udacity.shoestore.account
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.udacity.shoestore.R
 import com.udacity.shoestore.databinding.FragmentLoginBinding
+
 
 class LoginFragment : Fragment() {
     private val viewModel = LoginViewModel()
@@ -36,7 +39,7 @@ class LoginFragment : Fragment() {
         viewModel.isProcessing.observe(viewLifecycleOwner) { isProcessing ->
             binding.apply {
                 loading.visibility = if (isProcessing) View.VISIBLE else View.INVISIBLE
-                login.visibility = if (isProcessing) View.GONE else View.VISIBLE
+                login.visibility = if (isProcessing) View.INVISIBLE else View.VISIBLE
             }
         }
 
@@ -47,7 +50,15 @@ class LoginFragment : Fragment() {
         binding.apply {
             username.addTextChangedListener { validateInput() }
             password.addTextChangedListener { validateInput() }
-            login.setOnClickListener { viewModel.doLoging() }
+            login.setOnClickListener {
+                // hides soft keyboard
+                val imm: InputMethodManager =
+                    activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view?.windowToken, 0)
+
+                // perform login
+                viewModel.doLogIn()
+            }
         }
     }
 

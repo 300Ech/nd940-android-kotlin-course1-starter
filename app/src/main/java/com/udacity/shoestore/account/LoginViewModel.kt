@@ -30,16 +30,16 @@ class LoginViewModel : ViewModel() {
         _isInputValid.value = !(_username.isEmpty() || _password.isEmpty())
     }
 
-    fun doLoging() {
+    fun doLogIn() {
         if (_isInputValid.value == false) {
             _isLoggedIn.value = false
             return
         }
         _isProcessing.value = true
 
-        val delayTimeInMilis = 6 * 1000L
+        val delayTimeInMillis = 3 * 1000L
         viewModelScope.launch {
-            delay(delayTimeInMilis)
+            delay(delayTimeInMillis)
             _isProcessing.value = false
             _isLoggedIn.value = true
         }
