@@ -5,36 +5,54 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.udacity.shoestore.databinding.ActivityMainBinding
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
+    private var viewModel = MainViewModel()
     private lateinit var binding: ActivityMainBinding
-    private lateinit var navController: NavController
-    private lateinit var toolbar: Toolbar
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private val navController by lazy {
+        Navigation.findNavController(this, R.id.myNavHostFragment)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        toolbar = binding.toolbar
-        setSupportActionBar(toolbar)
-
-        navController = this.findNavController(R.id.myNavHostFragment)
-        NavigationUI.setupActionBarWithNavController(this, navController)
+        setupObservers()
+        setupDrawer()
 
         navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.loginFragment, R.id.welcomeScreenFragment, R.id.instructionFragment -> {
+                    // the drawer is not available on these destinations
+                    drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
                     activateFullScreen()
                 }
-                else -> disableFullScreen()
+                else -> {
+                    val graphInflater = navController.navInflater
+                    val graph = graphInflater.inflate(R.navigation.main_navigation)
+                    graph.setStartDestination(R.id.shoeListFragment)
+
+                    drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
+                    disableFullScreen()
+                }
             }
         })
 
@@ -42,17 +60,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp()
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+    }
+
+    override fun onBackPressed() {
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        } else super.onBackPressed()
+    }
+
+    private fun setupDrawer() {
+        drawerLayout = binding.drawerLayout
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.shoeListFragment),
+            binding.drawerLayout
+        )
+        binding.navView.setupWithNavController(navController)
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+    }
+
+    private fun setupObservers() {
+
     }
 
     private fun activateFullScreen() {
-        toolbar.visibility = View.GONE
+        supportActionBar?.hide()
         // going full screen
         window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     private fun disableFullScreen() {
-        toolbar.visibility = View.VISIBLE
+        supportActionBar?.show()
         // disabling full screen
         window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
