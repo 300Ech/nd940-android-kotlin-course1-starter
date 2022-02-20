@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.loginFragment, R.id.welcomeScreenFragment -> {
+                R.id.loginFragment, R.id.welcomeScreenFragment, R.id.instructionFragment -> {
                     activateFullScreen()
                 }
                 else -> disableFullScreen()
