@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/shoeListFragment"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_action_shoe_list"
         android:title="@string/shoes_list" />
     <item
         android:id="@+id/aboutFragment"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_action_about"
         android:title="@string/about_fragment_title" />
 </menu>

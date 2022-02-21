@@ -1,9 +1,7 @@
 package com.udacity.shoestore
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -31,6 +29,7 @@ class ShoeListFragment : Fragment(), ShoeListAdapter.OnShoeItemClick {
                 false
             )
         )
+        setHasOptionsMenu(true)
 
         binding.rvShoeList.adapter = adapter
         binding.rvShoeList.layoutManager = LinearLayoutManager(context)
@@ -40,6 +39,21 @@ class ShoeListFragment : Fragment(), ShoeListAdapter.OnShoeItemClick {
         setupObservers()
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.logoutMenuItem -> {
+                logout()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupListeners() {
@@ -57,6 +71,12 @@ class ShoeListFragment : Fragment(), ShoeListAdapter.OnShoeItemClick {
     private fun addNewShoe() {
         findNavController().navigate(
             ShoeListFragmentDirections.actionShoeListFragmentToShoeDetailsFragment(0)
+        )
+    }
+
+    private fun logout() {
+        findNavController().navigate(
+            ShoeListFragmentDirections.actionShoeListFragmentToLoginFragment()
         )
     }
 
