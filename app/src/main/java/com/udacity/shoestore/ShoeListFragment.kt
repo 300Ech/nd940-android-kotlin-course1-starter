@@ -1,20 +1,29 @@
 package com.udacity.shoestore
 
 import android.os.Bundle
-import android.view.*
+import android.view.View
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MenuInflater
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.udacity.shoestore.adapters.ShoeListAdapter
+import com.squareup.picasso.Picasso
 import com.udacity.shoestore.databinding.FragmentShoeListBinding
 import com.udacity.shoestore.models.Shoe
 import com.udacity.shoestore.viewmodels.MainViewModel
 
-class ShoeListFragment : Fragment(), ShoeListAdapter.OnShoeItemClick {
+interface OnShoeItemClick {
+    fun onShoeItemClickListener(shoeItem: Shoe)
+}
 
-    private val adapter = ShoeListAdapter(this)
+class ShoeListFragment : Fragment(), OnShoeItemClick {
+
+    private lateinit var onShoeItemClick: OnShoeItemClick
     private lateinit var binding: FragmentShoeListBinding
     private val viewModel: MainViewModel by activityViewModels()
 
@@ -31,12 +40,11 @@ class ShoeListFragment : Fragment(), ShoeListAdapter.OnShoeItemClick {
         )
         setHasOptionsMenu(true)
 
-        binding.rvShoeList.adapter = adapter
-        binding.rvShoeList.layoutManager = LinearLayoutManager(context)
-
         setupListeners()
 
         setupObservers()
+
+        onShoeItemClick = this
 
         return binding.root
     }
@@ -64,7 +72,29 @@ class ShoeListFragment : Fragment(), ShoeListAdapter.OnShoeItemClick {
 
     private fun setupObservers() {
         viewModel.shoeList.observe(viewLifecycleOwner) {
-            adapter.setShoeList(it)
+            buildShoeList(it)
+        }
+    }
+
+    private fun buildShoeList(shoeList: MutableList<Shoe>) {
+        binding.container.removeAllViews()
+
+        shoeList.forEach { shoe ->
+            val newItemLayout = layoutInflater.inflate(R.layout.shoe_list_item, binding.container, false)
+            val textViewCompany = newItemLayout.findViewById<TextView>(R.id.shoeCompany)
+            val textViewName = newItemLayout.findViewById<TextView>(R.id.shoeName)
+            val textViewDescription = newItemLayout.findViewById<TextView>(R.id.shoeDescription)
+            val shoeImage = newItemLayout.findViewById<ImageView>(R.id.shoeImage)
+
+            textViewCompany.text = shoe.company
+            textViewName.text = shoe.name
+            textViewDescription.text = shoe.description
+
+            if (shoe.images.isNotEmpty()) Picasso.get().load(shoe.images[0]).into(shoeImage)
+
+            newItemLayout.setOnClickListener { onShoeItemClick.onShoeItemClickListener(shoe) }
+
+            binding.container.addView(newItemLayout)
         }
     }
 
@@ -80,7 +110,7 @@ class ShoeListFragment : Fragment(), ShoeListAdapter.OnShoeItemClick {
         )
     }
 
-    override fun onItemClickListener(shoeItem: Shoe) {
+    override fun onShoeItemClickListener(shoeItem: Shoe) {
         findNavController().navigate(
             ShoeListFragmentDirections.actionShoeListFragmentToShoeDetailsFragment(shoeItem.id)
         )
