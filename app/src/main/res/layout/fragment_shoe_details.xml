@@ -8,7 +8,7 @@
 
         <variable
             name="mainViewModel"
-            type="com.udacity.shoestore.MainViewModel" />
+            type="com.udacity.shoestore.viewmodels.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

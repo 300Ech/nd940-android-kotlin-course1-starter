@@ -1,4 +1,4 @@
-package com.udacity.shoestore.account
+package com.udacity.shoestore.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,7 +37,7 @@ class LoginViewModel : ViewModel() {
         }
         _isProcessing.value = true
 
-        val delayTimeInMillis = 3 * 1000L
+        val delayTimeInMillis = 2 * 1000L
         viewModelScope.launch {
             delay(delayTimeInMillis)
             _isProcessing.value = false

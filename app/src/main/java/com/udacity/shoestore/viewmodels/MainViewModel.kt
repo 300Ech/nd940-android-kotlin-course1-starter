@@ -1,16 +1,18 @@
-package com.udacity.shoestore
+package com.udacity.shoestore.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import com.udacity.shoestore.models.Shoe
 import com.udacity.shoestore.models.ValidationError
-import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
     // The actual shoe list to display
-    private val shoeList = MutableLiveData<MutableList<Shoe>>()
+    private val _shoeList = MutableLiveData<MutableList<Shoe>>()
+    val shoeList: LiveData<MutableList<Shoe>>
+        get() = _shoeList
+
     var shoeModel = MutableLiveData<Shoe>()
 
     // Contains the input validation errors
@@ -32,7 +34,7 @@ class MainViewModel : ViewModel() {
 
     init {
         shoeModel.value = getDefaultShoeItem()
-        shoeList.value = mutableListOf()
+        _shoeList.value = mutableListOf()
         loadShoes()
     }
 
@@ -47,9 +49,9 @@ class MainViewModel : ViewModel() {
                 company = "Tory Burch",
                 description = "A contoured footbed adds everyday comfort to a breezy sandal topped with an iconic logo medallion.",
                 images = arrayListOf(
-                    "https://n.nordstrommedia.com/id/sr3/1340a955-febe-42f2-9bb8-3aa7d1069609.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
-                    "https://n.nordstrommedia.com/id/sr3/372b48fc-5f45-4175-b29c-aedbf44b6808.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
-                    "https://n.nordstrommedia.com/id/sr3/a0d82c6e-3478-49e6-8f18-00fe15b68f28.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838"
+                    "http://n.nordstrommedia.com/id/sr3/1340a955-febe-42f2-9bb8-3aa7d1069609.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
+                    "http://n.nordstrommedia.com/id/sr3/372b48fc-5f45-4175-b29c-aedbf44b6808.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
+                    "http://n.nordstrommedia.com/id/sr3/a0d82c6e-3478-49e6-8f18-00fe15b68f28.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838"
                 )
             )
         )
@@ -62,9 +64,9 @@ class MainViewModel : ViewModel() {
                 company = "Nike",
                 description = "Nike's 1979 Tailwind marathon shoe gets a much-hyped update in this throwback sneaker that still sports its blend of sleek nylon and high-pile suede.",
                 images = arrayListOf(
-                    "https://n.nordstrommedia.com/id/sr3/43b2d345-af0d-4f51-9b78-43df4de82e8a.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
-                    "https://n.nordstrommedia.com/id/sr3/080f6e11-6543-4ec2-b077-9a23caa1ae27.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
-                    "https://n.nordstrommedia.com/id/sr3/7512c2e4-92c2-4bf1-9def-246280021a88.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838"
+                    "http://n.nordstrommedia.com/id/sr3/43b2d345-af0d-4f51-9b78-43df4de82e8a.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
+                    "http://n.nordstrommedia.com/id/sr3/080f6e11-6543-4ec2-b077-9a23caa1ae27.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838",
+                    "http://n.nordstrommedia.com/id/sr3/7512c2e4-92c2-4bf1-9def-246280021a88.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838"
                 )
             )
         )
@@ -114,11 +116,12 @@ class MainViewModel : ViewModel() {
             )
         )
 
-        shoeList.value?.addAll(defaultShoes)
+        _shoeList.value?.addAll(defaultShoes)
     }
 
     fun edit(id: Int) {
         if (id == 0) shoeModel.value = getDefaultShoeItem()
+        else shoeModel.value = _shoeList.value?.find { it.id == id }
     }
 
     fun validateInput() {
@@ -158,8 +161,9 @@ class MainViewModel : ViewModel() {
     fun save() {
         if (_isModelValid.value == false) return
 
-        if (shoeModel.value != null) {
-            if (shoeModel.value?.id == 0) add()
+        shoeModel.value?.let { model ->
+            if (model.id == 0) add()
+            else update(model.id)
         }
     }
 
@@ -169,14 +173,26 @@ class MainViewModel : ViewModel() {
 
     // Adds a new item to the Shoe list.
     private fun add() {
-        val newIndex = (shoeList.value?.maxOf { it.id } ?: 0) + 1
+        val newIndex = (_shoeList.value?.maxOf { it.id } ?: 0) + 1
 
         shoeModel.value?.id = newIndex
-        val value = shoeList.value ?: arrayListOf()
+        val value = _shoeList.value ?: arrayListOf()
         value.add(shoeModel.value!!)
-        shoeList.postValue(value)
+        _shoeList.postValue(value)
 
         _shoeSaved.value = true
+    }
+
+    private fun update(id: Int) {
+        _shoeList.value?.find { it.id == id }?.apply {
+            shoeModel.value?.let { model ->
+                name = model.name
+                description = model.description
+                size = model.size
+                company = model.company
+            }
+            _shoeSaved.value = true
+        }
     }
 
     companion object {

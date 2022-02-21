@@ -1,17 +1,17 @@
 package com.udacity.shoestore
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
+
 import com.udacity.shoestore.databinding.FragmentShoeDetailsBinding
+import com.udacity.shoestore.viewmodels.MainViewModel
 
 class ShoeDetailsFragment : Fragment() {
 
@@ -22,7 +22,8 @@ class ShoeDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel.edit(0)
+        val args = ShoeDetailsFragmentArgs.fromBundle(requireArguments())
+        viewModel.edit(args.shoeId)
 
         binding = FragmentShoeDetailsBinding.bind(
             inflater.inflate(
@@ -33,6 +34,16 @@ class ShoeDetailsFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
+        setupObservers()
+
+        binding.mainViewModel = viewModel
+
+        setupListeners()
+
+        return binding.root
+    }
+
+    private fun setupObservers() {
         viewModel.shoeSaved.observe(viewLifecycleOwner) { isSaved ->
             if (isSaved) findNavController()
                 .navigate(ShoeDetailsFragmentDirections.actionShoeDetailsFragmentToShoeListFragment())
@@ -44,12 +55,6 @@ class ShoeDetailsFragment : Fragment() {
                 inputLayout?.error = error.errorMessage
             }
         }
-
-        binding.mainViewModel = viewModel
-
-        setupListeners()
-
-        return binding.root
     }
 
     private fun setupListeners() {
