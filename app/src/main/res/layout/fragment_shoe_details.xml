@@ -102,10 +102,10 @@
 
         <Button
             android:id="@+id/saveButton"
+            style="@style/PrimaryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/rounded_corner"
             android:enabled="@{mainViewModel.isModelValid()}"
             android:onClick="@{()->mainViewModel.save()}"
             android:text="@string/save"
@@ -114,12 +114,11 @@
 
         <Button
             android:id="@+id/cancelButton"
+            style="@style/DangerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/rounded_corner_secondary"
             android:text="@string/cancel"
-            android:textColor="@color/primaryColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

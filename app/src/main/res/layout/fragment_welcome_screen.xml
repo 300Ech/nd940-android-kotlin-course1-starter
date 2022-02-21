@@ -22,39 +22,33 @@
 
             <TextView
                 android:id="@+id/welcomeTitle"
+                style="@style/HeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:shadowColor="@color/secondaryTextColor"
                 android:text="@string/welcome_title"
-                android:textColor="@color/primaryDarkColor"
-                android:textSize="28sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                style="@style/Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:lineSpacingExtra="10dp"
-                android:shadowColor="@android:color/white"
-                android:shadowRadius="2.5"
                 android:text="@string/lorem_ipsum_1"
-                android:textColor="@color/secondaryDarkColor"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/welcomeTitle" />
 
             <Button
                 android:id="@+id/next"
+                style="@style/PrimaryButton"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginTop="36dp"
                 android:layout_marginBottom="64dp"
-                android:background="@drawable/rounded_corner"
                 android:text="@string/next"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

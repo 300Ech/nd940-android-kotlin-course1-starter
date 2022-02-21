@@ -15,4 +15,28 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="PrimaryButton">
+        <item name="android:background">@drawable/rounded_corner</item>
+    </style>
+
+    <style name="DangerButton">
+        <item name="android:background">@drawable/rounded_corner_secondary</item>
+        <item name="android:textColor">@color/primaryColor</item>
+    </style>
+
+    <style name="HeaderText">
+        <item name="android:shadowColor">@color/secondaryTextColor</item>
+        <item name="android:textColor">@color/primaryDarkColor</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Body1">
+        <item name="android:lineSpacingExtra">10dp</item>
+        <item name="android:shadowColor">@android:color/white</item>
+        <item name="android:shadowRadius">2.5</item>
+        <item name="android:textColor">@color/secondaryDarkColor</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>
