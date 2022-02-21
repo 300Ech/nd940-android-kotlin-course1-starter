@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_add"
         android:title="@string/shoes_list" />
     <item
-        android:id="@+id/shoeDetailsFragment"
+        android:id="@+id/aboutFragment"
         android:icon="@drawable/ic_add"
-        android:title="@string/create_new" />
+        android:title="@string/about_fragment_title" />
 </menu>

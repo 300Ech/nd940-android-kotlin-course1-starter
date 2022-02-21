@@ -55,5 +55,12 @@
             app:destination="@id/shoeListFragment"
             app:popUpTo="@id/shoeDetailsFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="shoeId"
+            app:argType="integer"/>
     </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.udacity.shoestore.AboutFragment"
+        android:label="@string/about_fragment_title" />
 </navigation>

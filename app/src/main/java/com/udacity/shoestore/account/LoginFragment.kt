@@ -70,6 +70,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun showWelcomeScreen() {
-        findNavController().navigate(R.id.welcomeScreenFragment)
+        findNavController()
+            .navigate(LoginFragmentDirections.actionLoginFragmentToWelcomeScreenFragment())
     }
 }

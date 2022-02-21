@@ -4,6 +4,7 @@
     <!-- Fragment Titles -->
     <string name="shoe_details_fragment_title">Shoe Details</string>
     <string name="shoe_list_fragment_title">The Shoe Store</string>
+    <string name="about_fragment_title">About</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

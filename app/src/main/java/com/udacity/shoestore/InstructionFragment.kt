@@ -31,7 +31,7 @@ class InstructionFragment : Fragment() {
 
     private fun setupListeners() {
         binding.ShowShoes.setOnClickListener {
-            findNavController().navigate(R.id.action_instructionFragment_to_shoeListFragment)
+            findNavController().navigate(InstructionFragmentDirections.actionInstructionFragmentToShoeListFragment())
         }
     }
 }

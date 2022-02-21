@@ -34,7 +34,8 @@ class ShoeDetailsFragment : Fragment() {
         binding.lifecycleOwner = this
 
         viewModel.shoeSaved.observe(viewLifecycleOwner) { isSaved ->
-            if (isSaved) findNavController().navigate(R.id.action_shoeDetailsFragment_to_shoeListFragment)
+            if (isSaved) findNavController()
+                .navigate(ShoeDetailsFragmentDirections.actionShoeDetailsFragmentToShoeListFragment())
         }
 
         viewModel.errorList.observe(viewLifecycleOwner) { validationErrors ->
@@ -78,6 +79,7 @@ class ShoeDetailsFragment : Fragment() {
     }
 
     private fun returnToShoeList() {
-        findNavController().navigate(R.id.action_shoeDetailsFragment_to_shoeListFragment)
+        findNavController()
+            .navigate(ShoeDetailsFragmentDirections.actionShoeDetailsFragmentToShoeListFragment())
     }
 }

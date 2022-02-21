@@ -31,7 +31,8 @@ class WelcomeScreenFragment : Fragment() {
 
     private fun setupListeners() {
         binding.next.setOnClickListener {
-            findNavController().navigate(R.id.action_welcomeScreenFragment_to_instructionFragment)
+            findNavController()
+                .navigate(WelcomeScreenFragmentDirections.actionWelcomeScreenFragmentToInstructionFragment())
         }
     }
 }
