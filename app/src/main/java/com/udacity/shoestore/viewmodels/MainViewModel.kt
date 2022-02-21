@@ -120,6 +120,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun edit(id: Int) {
+        _shoeSaved.value = false
         if (id == 0) shoeModel.value = getDefaultShoeItem()
         else shoeModel.value = _shoeList.value?.find { it.id == id }
     }
